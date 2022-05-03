@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/sangeeta-chaukulkar/Group-chat-app/issues"
   },
-  "homepage": "https://github.com/sangeeta-chaukulkar/Group-chat-app#readme"
+  "homepage": "https://github.com/sangeeta-chaukulkar/Group-chat-app#readme",
+  "dependencies": {
+    "cors": "^2.8.5"
+  }
 }

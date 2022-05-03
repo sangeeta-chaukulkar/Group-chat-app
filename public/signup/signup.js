@@ -17,13 +17,12 @@ function addUser(e){
     axios.post(`http://localhost:3000/signup`,data)
     .then(result=>{
         alert(result.data.message);
-        // if(result.data.message === 'User already exists, Please Login' || 'Successfuly signed up'){
-        //     window.location.replace('../login.html');
-        // }
-        // else{
-        //     window.location.replace('../signup.html');
-        // }    
-
+        if(result.data.message === 'User already exists, Please Login' || 'Successfuly signed up'){
+            window.location.replace('../../login/login.html');
+        }
+        else{
+            window.location.replace('../../signup/signup.html');
+        }    
 
     })  
     .catch(err => {

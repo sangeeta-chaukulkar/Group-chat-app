@@ -31,3 +31,27 @@ exports.signup = (req, res) => {
       });
   };
   
+  exports.login = (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    User.findOne({ where: { email: email} })
+    .then(user => {
+      if(!user){
+        return res.status(404).json( { message: "User Not Found" });
+      }
+      bcrypt.compare(password,user.password)
+      .then(isMatch=>{
+        if(isMatch){
+            res.send({message:'Login successfully'}); 
+        }
+        else{
+          return res.status(401).json({ message: "Either usename or password is wrong" });
+        }
+      })
+      
+    })
+    .catch(err=>{
+      console.log(err);
+    })
+  }
+  
