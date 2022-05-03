@@ -9,6 +9,14 @@ function userLogin(e){
     .then(result=>{
         console.log(result.data.token);
         alert(result.data.message);
+        if(result){
+            if(result.data.message === 'Login successfully'){
+                window.location.replace('../../chatapp/chatapp.html');
+            }  
+        }
+        else {
+            throw new Error('Failed to login')
+        }
     })  
     .catch(err => {
         console.log(err)
