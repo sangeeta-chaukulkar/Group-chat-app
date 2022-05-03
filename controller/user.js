@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 exports.signup = (req, res) => {
 
@@ -40,14 +41,16 @@ exports.signup = (req, res) => {
         return res.status(404).json( { message: "User Not Found" });
       }
       bcrypt.compare(password,user.password)
-      .then(isMatch=>{
+        .then(isMatch=>{
         if(isMatch){
-            res.send({message:'Login successfully'}); 
+            jwt.sign({id:user.dataValues.id}, process.env.TOKEN_SECRET, { expiresIn: '1800s' },(err,token)=>{
+            res.send({token:token,message:'Login successfully'}); 
+            }); 
         }
         else{
-          return res.status(401).json({ message: "Either usename or password is wrong" });
+            return res.status(401).json({ message: 'User Not Authorized' });
         }
-      })
+        })
       
     })
     .catch(err=>{

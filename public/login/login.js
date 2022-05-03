@@ -7,6 +7,7 @@ function userLogin(e){
     ValidateEmail(email);
     axios.post(`http://localhost:3000/login`,{email:email,password:password})
     .then(result=>{
+        console.log(result.data.token);
         alert(result.data.message);
     })  
     .catch(err => {
