@@ -23,29 +23,22 @@ body{
     color: white;
     padding:15px; 
 }
-.body{
+.message_area{
     flex:1;
     color: white;
     background-color: rgba(0,0,0,0.7);
     padding: 20px 30px;
-}
-.message{
-    background-color: rgb(123, 91, 241) ;
-    padding:10px;
-    color: white;
-    width: fit-content;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-.user_message{
-    margin-left: auto;
-    background-color: white;
-    color: black;
+    height: 500px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-top: 40px;
 }
 .footer form{
     display: flex;
 }
-form input{
+form textarea{
     flex:1;
     height:40px;
     border:none;
@@ -65,5 +58,29 @@ form button{
 form button:hover{
     background-color: blue;
     transition: 0.2s ease;
+}
+.message {
+    padding: 20px; 
+    border-radius: 4px; 
+    margin-bottom: 10px;
+    max-width: 300px;
+    position: relative;
+}
+.incoming {
+    background: #8F8BE8;
+    color: #fff;  
+}
+.outgoing {
+    background: #e9eafd;
+    color: #787986;
+    margin-left: auto;
+}
+.message h4 {
+    position: absolute;
+    top: -5px;
+    margin:0px;
+    left: 0;
+    color: rgb(224, 224, 24);
+    font-size: 14px;
 }
 

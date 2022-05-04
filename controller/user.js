@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const Message = require('../models/message');
-// const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 
 
@@ -38,7 +37,6 @@ exports.signup = (req, res) => {
 exports.login = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
-    console.log("h",email);
     User.findOne({ where: { email: email} })
     .then(user => {
       if(!user){
@@ -62,7 +60,15 @@ exports.login = (req, res) => {
       console.log(err);
     })
   }
-
+exports.getUserMessages=(req,res)=>{
+  const name=req.user.name;
+  req.user.getMessages().then(messages => {
+    return res.status(200).json({messages, name,success: true})
+  })
+  .catch(err => {
+      return res.status(402).json({ error: err, success: false})
+  })
+}
 exports.messages=(req,res)=>{
     const msg = req.body.msg; 
     req.user.createMessage({
@@ -75,4 +81,20 @@ exports.messages=(req,res)=>{
         return res.status(402).json({ message: err});
       });
   }
+
+exports.getUser = (req, res) => {
+    const id = req.params.id;
+
+    User.findOne({ where: { id: id} })
+    .then(user => {
+      if(!user){
+        return res.status(404).json( { message: "User Not Found" });
+      }
+      return res.status(201).json({ user, message: 'success'});  
+      })
+    .catch(err=>{
+      console.log(err);
+    })
+  }
+
   
