@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const Message = require('../models/message');
+// const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
+
 
 exports.signup = (req, res) => {
 
@@ -32,9 +35,10 @@ exports.signup = (req, res) => {
       });
   };
   
-  exports.login = (req, res) => {
+exports.login = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
+    console.log("h",email);
     User.findOne({ where: { email: email} })
     .then(user => {
       if(!user){
@@ -44,7 +48,8 @@ exports.signup = (req, res) => {
         .then(isMatch=>{
         if(isMatch){
             jwt.sign({id:user.dataValues.id}, process.env.TOKEN_SECRET, { expiresIn: '1800s' },(err,token)=>{
-            res.send({token:token,message:'Login successfully'}); 
+              
+              res.send({token:token,message:'Login successfully'}); 
             }); 
         }
         else{
@@ -56,5 +61,18 @@ exports.signup = (req, res) => {
     .catch(err=>{
       console.log(err);
     })
+  }
+
+exports.messages=(req,res)=>{
+    const msg = req.body.msg; 
+    req.user.createMessage({
+        message:msg
+      })
+      .then(msg => {
+        return res.status(201).json({ msg, message: 'Message added successfuly'});  
+      })
+      .catch(err => {
+        return res.status(402).json({ message: err});
+      });
   }
   

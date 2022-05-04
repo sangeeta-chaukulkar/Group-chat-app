@@ -5,12 +5,17 @@ function userLogin(e){
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     ValidateEmail(email);
+    console.log(email);
     axios.post(`http://localhost:3000/login`,{email:email,password:password})
     .then(result=>{
         console.log(result.data.token);
         alert(result.data.message);
+        alert(result.data);
         if(result){
             if(result.data.message === 'Login successfully'){
+                // localStorage.setItem('token',JSON.stringify({token:result.data.token}));
+                localStorage.setItem('token',result.data.token);
+
                 window.location.replace('../../chatapp/chatapp.html');
             }  
         }

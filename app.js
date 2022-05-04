@@ -9,15 +9,19 @@ const bodyParser = require('body-parser');
 const sequelize = require('./util/database');
 const app = express();
 var cors = require('cors')
-app.use(cors())
-
+app.use(cors());
+const User = require('./models/user');
+const Message = require('./models/message');
 const userRoutes = require('./routes/user');
+
 // app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(userRoutes);
+User.hasMany(Message);
+Message.belongsTo(User);
 
 app.use((req, res)=>{
     res.sendFile(path.join(__dirname,`public/${req.url}`));
