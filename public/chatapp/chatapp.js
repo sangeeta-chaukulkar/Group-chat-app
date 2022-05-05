@@ -18,20 +18,27 @@ function saveMsg(){
     })
 }
 
-window.addEventListener('load', async (e)=> {
-    e.preventDefault();
+async function loadMessages(){
     const token=localStorage.getItem('token');
     let messageArea = document.querySelector('.message_area')
-    await axios.get('http://localhost:3000/getUserMessages', { headers: {"authorization" : token} })
-    .then(response => {
-            response.data.messages.forEach(message => {
-                let mainDiv = document.createElement('div')
-                mainDiv.setAttribute('class','message');
-                let data = `
-                    <h4>${response.data.name}</h4>
-                    <p>${message.message}</p>`
-                mainDiv.innerHTML = data
-                messageArea.appendChild(mainDiv);
-            })            
-    })
-  });
+    messageArea.innerHTML='';
+    try{
+        await axios.get('http://localhost:3000/getUserMessages', { headers: {"authorization" : token} })
+        .then(response => {
+                response.data.messages.forEach(message => {
+                    let mainDiv = document.createElement('div')
+                    mainDiv.setAttribute('class','message');
+                    let data = `
+                        <h4>${response.data.name}</h4>
+                        <p>${message.message}</p>`
+                    mainDiv.innerHTML = data
+                    messageArea.appendChild(mainDiv);
+                })            
+        })
+    }
+    catch(err){
+        console.log(err);
+    }  
+  };
+
+  setInterval(loadMessages,1000);
