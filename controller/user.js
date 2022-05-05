@@ -2,10 +2,9 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const Message = require('../models/message');
 const jwt = require('jsonwebtoken');
-
+const Sequelize=require('sequelize');
 
 exports.signup = (req, res) => {
-
     const name = req.body.name;
     const email = req.body.email;
     const phone = req.body.phone;
@@ -60,15 +59,15 @@ exports.login = (req, res) => {
       console.log(err);
     })
   }
-exports.getUserMessages=(req,res)=>{
-  const name=req.user.name;
-  req.user.getMessages().then(messages => {
-    return res.status(200).json({messages, name,success: true})
-  })
-  .catch(err => {
-      return res.status(402).json({ error: err, success: false})
-  })
-}
+// exports.getUserMessages=(req,res)=>{
+//   const name=req.user.name;
+//   req.user.getMessages().then(messages => {
+//     return res.status(200).json({messages, name,success: true})
+//   })
+//   .catch(err => {
+//       return res.status(402).json({ error: err, success: false})
+//   })
+// }
 exports.messages=(req,res)=>{
     const msg = req.body.msg; 
     req.user.createMessage({
@@ -81,6 +80,34 @@ exports.messages=(req,res)=>{
         return res.status(402).json({ message: err});
       });
   }
+exports.getUserMessages=(req,res)=>{
+    const name=req.user.name;
+    const Op = Sequelize.Op;
+    const threshold = req.params.lastmsgid;
+    req.user.getMessages({where: {id:{ 
+      [Op.gt]: threshold
+          }}})
+    .then(messages => {
+      return res.status(200).json({messages, name,success: true})
+    })
+    .catch(err => {
+        return res.status(402).json({ error: err, success: false})
+    })
+  }
+  // exports.getWeeklyexpenses = (req, res)=> {
+    
+  //   const threshold = new Date(Date.now()-7*24*60*60*1000);
+  //   console.log(threshold);
+  //   req.user.getExpenses({where: {createdAt:{ 
+  //     [Op.gt]: threshold
+  //         }}})
+  //       .then(expenses => {
+  //       return res.status(200).json({expenses, success: true})
+  //   })
+  //   .catch(err => {
+  //       return res.status(402).json({ error: err, success: false})
+  //   })
+  // }
 
 exports.getUser = (req, res) => {
     const id = req.params.id;
@@ -96,5 +123,7 @@ exports.getUser = (req, res) => {
       console.log(err);
     })
   }
+
+ 
 
   

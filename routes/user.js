@@ -12,7 +12,7 @@ router.post('/login', userController.login);
 
 router.post('/message', authMiddleware.authenticate,userController.messages);
 
-router.get('/getUserMessages', authMiddleware.authenticate,userController.getUserMessages);
+router.get('/getUserMessages/:lastmsgid', authMiddleware.authenticate,userController.getUserMessages);
 
 
 
