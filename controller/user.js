@@ -34,6 +34,7 @@ exports.signup = (req, res) => {
   };
   
 exports.login = (req, res) => {
+    console.log("req.body.email",req.body);
     const email = req.body.email;
     const password = req.body.password;
     User.findOne({ where: { email: email} })
@@ -59,22 +60,15 @@ exports.login = (req, res) => {
       console.log(err);
     })
   }
-// exports.getUserMessages=(req,res)=>{
-//   const name=req.user.name;
-//   req.user.getMessages().then(messages => {
-//     return res.status(200).json({messages, name,success: true})
-//   })
-//   .catch(err => {
-//       return res.status(402).json({ error: err, success: false})
-//   })
-// }
+
 exports.messages=(req,res)=>{
     const msg = req.body.msg; 
+    let name=req.user.name;
     req.user.createMessage({
         message:msg
       })
       .then(msg => {
-        return res.status(201).json({ msg, message: 'Message added successfuly'});  
+        return res.status(201).json({ msg, name,message: 'Message added successfuly'});  
       })
       .catch(err => {
         return res.status(402).json({ message: err});
@@ -94,24 +88,23 @@ exports.getUserMessages=(req,res)=>{
         return res.status(402).json({ error: err, success: false})
     })
   }
-  // exports.getWeeklyexpenses = (req, res)=> {
-    
-  //   const threshold = new Date(Date.now()-7*24*60*60*1000);
-  //   console.log(threshold);
-  //   req.user.getExpenses({where: {createdAt:{ 
-  //     [Op.gt]: threshold
-  //         }}})
-  //       .then(expenses => {
-  //       return res.status(200).json({expenses, success: true})
-  //   })
-  //   .catch(err => {
-  //       return res.status(402).json({ error: err, success: false})
-  //   })
-  // }
+  
+exports.getMessages=(req,res)=>{
+    const Op = Sequelize.Op;
+    const threshold = req.params.lastmsgid;
+    Message.findAll({where: {id:{ 
+      [Op.gt]: threshold
+          }}})
+    .then(messages => {
+      return res.status(200).json({messages,success: true})
+    })
+    .catch(err => {
+        return res.status(402).json({ error: err, success: false})
+    })
+  }
 
 exports.getUser = (req, res) => {
     const id = req.params.id;
-
     User.findOne({ where: { id: id} })
     .then(user => {
       if(!user){

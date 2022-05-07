@@ -15,7 +15,7 @@ function userLogin(e){
             if(result.data.message === 'Login successfully'){
                 // localStorage.setItem('token',JSON.stringify({token:result.data.token}));
                 localStorage.setItem('token',result.data.token);
-
+                
                 window.location.replace('../../chatapp/chatapp.html');
             }  
         }

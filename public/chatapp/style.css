@@ -68,19 +68,21 @@ form button:hover{
 }
 .incoming {
     background: #8F8BE8;
-    color: #fff;  
+    color: rgb(3, 33, 1);  
 }
 .outgoing {
     background: #e9eafd;
-    color: #787986;
+    color: #040c71;
     margin-left: auto;
+    
 }
 .message h4 {
     position: absolute;
     top: -5px;
     margin:0px;
     left: 0;
-    color: rgb(224, 224, 24);
+    color: rgb(18, 18, 16);
     font-size: 14px;
+    padding:5px;
 }
 
