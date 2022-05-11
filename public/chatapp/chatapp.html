@@ -8,11 +8,50 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="sidebar">
+        <div class="header">
+            <div class="avatar">
+                <img src="logo.JPG" alt="">
+            </div>
+            <h4>Chat app</h4>
+            <div class="chat-header-right">
+                
+            </div>
+        </div>
+        <div class="sidebar-search">
+            <div class="sidebar-search-container">
+                <button type="submit" id="createGroup" onclick="openForm()">Create a group</button>
+            </div>
+        </div>
+        <div class="sidebar-chats">
+            <!-- <div class="sidebar-chat"> -->
+                <div class="chat-avatar">
+                    <!-- <img src="" alt=""> -->
+                </div>
+                <!-- <div class="chat-info"> -->
+                    <!-- <h4> </h4>
+                    <p>last message</p> -->
+                <!-- </div> -->
+                <!-- <div class="time">
+                    <p> 1pm</p>
+                </div> -->
+            <!-- </div> -->
+        </div>
+    </div>
     <div class="container">
         <div class="header">
-            <h1>Chat App </h1>
+            <div class="chat-title">
+                <div class="avatar">
+                    <img src="profile.JPG" alt="">
+                </div>
+                <div class="message-header-content">
+                    <h4></h4>
+                    <p> </p>
+                </div>
+            </div>
         </div>
         <div class='message_area'>
+            <!-- <p class="chat-message">This is a msg<span class="chat-timestamp">11:33pm</span></p> -->
         </div>
         <div class="footer">
             <form> 
@@ -21,8 +60,20 @@
             </form>
         </div>
     </div>
+</div>
+<div class="form-popup" id="myForm">
+    <form class="form-container">
+      <input type="text" placeholder="Enter group name" name="groupName" id="groupName" required>
+      <input type="text" id="groupusers" required>
+      <select id="usersInGroup">
+      </select>
+      <button type="submit" class="btn" id="createGroupDB">Create</button>
+      <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+    </form>
+  </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"></script>
     <script src="chatapp.js"></script>
-</body>
+   </body>
 </html>

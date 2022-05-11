@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const Message = require('../models/message');
+const Group = require('../models/group');
 const jwt = require('jsonwebtoken');
 const Sequelize=require('sequelize');
 
@@ -103,6 +104,17 @@ exports.getMessages=(req,res)=>{
     })
   }
 
+  exports.getGroupMessages=(req,res)=>{
+    const groupid = req.params.groupid;
+    Message.findAll({where: {groupid: groupid }})
+    .then(messages => {
+      return res.status(200).json({messages,success: true})
+    })
+    .catch(err => {
+        return res.status(402).json({ error: err, success: false})
+    })
+  }
+
 exports.getUser = (req, res) => {
     const id = req.params.id;
     User.findOne({ where: { id: id} })
@@ -116,7 +128,59 @@ exports.getUser = (req, res) => {
       console.log(err);
     })
   }
-
+  exports.getUsers = (req, res) => {
+    User.findAll()
+    .then(users => {
+      if(!users){
+        return res.status(404).json( { message: "Users Not Available" });
+      }
+      return res.status(201).json({ users, message: 'success'});  
+      })
+    .catch(err=>{
+      console.log(err);
+    })
+  }
  
+exports.createGroup = (req, res) => {
+    console.log("req.body.groupName",req.body);
+    const groupName = req.body.groupName;
+    const userlist = req.body.userlist;
+    
+      Group.findOne({ where: { name: groupName } })
+      .then(group => {
+        if(group){
+          res.json({message:'group already exists, Please enter other group name'});
+        }
+        else{
+          req.user.createGroup({
+          name: groupName,
+          userlist: userlist
+        })
+      }
+      })
+        .then(result => {
+          res.json({message:'Group created successfully'});
+        })
+        .catch(err => {
+          console.log(err);
+        });
+};
 
-  
+exports.getGroup = (req, res) => {
+  const id = req.params.id;
+  const Op = Sequelize.Op;   
+  Group.findAll({ where: {
+    [Op.or]: [
+      { userId : id},
+      {userlist:{[Op.like]:'%;'+id+';%'} }  ]  }})
+    // { userId : id, userlist:{[Op.like]:'%'+id+'%'} }})
+  .then(group => {
+    if(!group){
+      return res.status(404).json( { message: "group not available" });
+    }
+    return res.status(201).json({ group, message: 'success'});  
+    })
+  .catch(err=>{
+    console.log(err);
+  })
+}
