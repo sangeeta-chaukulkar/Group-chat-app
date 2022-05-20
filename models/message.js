@@ -10,12 +10,9 @@ const Message = sequelize.define('message', {
     primaryKey: true
   },
   message: {
-    type:Sequelize.STRING,
-    allowNull: false
-  },
-  groupid:{
-    type: Sequelize.INTEGER
+    type:Sequelize.STRING
   }
+
 
 });
 

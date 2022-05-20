@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
 const sequelize = require('../util/database');
-
+const User = require('./user');
 const Group = sequelize.define('group', {
   id: {
     type: Sequelize.INTEGER,
@@ -13,11 +13,24 @@ const Group = sequelize.define('group', {
     type:Sequelize.STRING,
     allowNull: false
   },
+  alternatename:{
+    type:Sequelize.STRING,
+    default:null
+  },
+  isGroupChat:{
+    type:Sequelize.BOOLEAN,
+    default:false
+  },
   userlist:{
     type:Sequelize.STRING,
+    allowNull: false,
+  },
+  groupAdmin:{
+    type: Sequelize.INTEGER,
     allowNull: false,
   }
 
 });
 
 module.exports = Group;
+

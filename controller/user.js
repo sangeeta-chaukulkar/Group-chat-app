@@ -2,8 +2,10 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const Message = require('../models/message');
 const Group = require('../models/group');
+const userGroup = require('../models/usergroup');
 const jwt = require('jsonwebtoken');
 const Sequelize=require('sequelize');
+
 
 exports.signup = (req, res) => {
     const name = req.body.name;
@@ -64,12 +66,14 @@ exports.login = (req, res) => {
 
 exports.messages=(req,res)=>{
     const msg = req.body.msg; 
+    const groupid = req.body.groupId; 
     let name=req.user.name;
     req.user.createMessage({
-        message:msg
+        message:msg,
+        groupId: groupid
       })
       .then(msg => {
-        return res.status(201).json({ msg, name,message: 'Message added successfuly'});  
+        return res.status(201).json({ msg, name,message: 'Message added successfully'});  
       })
       .catch(err => {
         return res.status(402).json({ message: err});
@@ -104,7 +108,7 @@ exports.getMessages=(req,res)=>{
     })
   }
 
-  exports.getGroupMessages=(req,res)=>{
+exports.getGroupMessages=(req,res)=>{
     const groupid = req.params.groupid;
     Message.findAll({where: {groupid: groupid }})
     .then(messages => {
@@ -113,7 +117,7 @@ exports.getMessages=(req,res)=>{
     .catch(err => {
         return res.status(402).json({ error: err, success: false})
     })
-  }
+}
 
 exports.getUser = (req, res) => {
     const id = req.params.id;
@@ -127,8 +131,29 @@ exports.getUser = (req, res) => {
     .catch(err=>{
       console.log(err);
     })
-  }
-  exports.getUsers = (req, res) => {
+}
+
+exports.getUsername = (req, res) => {
+  const id = req.params.id;
+  Message.findAll({ 
+    attributes:[Sequelize.fn('DISTINCT',Sequelize.col('userId')),'userId'],
+    // ,'userId'
+    where: { groupId: id}
+    // distinct: true,
+    // col: Message.userId 
+  })
+  .then(userId => {
+    if(!userId){
+      return res.status(404).json( { message: "User Not Found" });
+    }
+    return res.status(201).json({ userId, message: 'success'});  
+    })
+  .catch(err=>{
+    console.log(err);
+  })
+}
+
+exports.getUsers = (req, res) => {
     User.findAll()
     .then(users => {
       if(!users){
@@ -143,21 +168,35 @@ exports.getUser = (req, res) => {
  
 exports.createGroup = (req, res) => {
     console.log("req.body.groupName",req.body);
+    console.log("req.user.id",req.user.id);
+    let userlist='';
     const groupName = req.body.groupName;
-    const userlist = req.body.userlist;
-    
-      Group.findOne({ where: { name: groupName } })
-      .then(group => {
-        if(group){
-          res.json({message:'group already exists, Please enter other group name'});
-        }
-        else{
+    // userlist = req.body.userlist;
+    const isgroupchat=req.body.isgroupchat;
+    if (req.body.alternatename){
+      var alternatename=req.body.alternatename;
+    }
+    else{
+      var alternatename=null;
+    }
+    console.log("userlist",userlist);
+    userlist+= ";" +req.body.userlist+";"+req.user.id+ ";" ;
+    console.log("userlist1",typeof(userlist));
+      // Group.findOne({ where: { name: groupName } })
+      // .then(group => {
+      //   if(group){
+      //     res.json({message:'group already exists, Please enter other group name'});
+      //   }
+      //   else{
           req.user.createGroup({
           name: groupName,
-          userlist: userlist
+          alternatename:alternatename,
+          isGroupChat:isgroupchat,
+          userlist: userlist,
+          groupAdmin: req.user.id
         })
-      }
-      })
+      // }
+      // })
         .then(result => {
           res.json({message:'Group created successfully'});
         })
@@ -166,13 +205,44 @@ exports.createGroup = (req, res) => {
         });
 };
 
+exports.updategroup = (req, res) => {
+  console.log("req.body.groupName",req.body);
+  console.log("req.user.id",req.user.id);
+  let userlist='';
+  const groupName = req.body.groupName;
+  userlist = req.body.userlist;
+  const isgroupchat=req.body.isgroupchat;
+  const groupid=req.body.groupid;
+  // console.log("userlist",userlist);
+  // userlist+= ";" +req.user.id+ ";" ;
+  // console.log("userlist1",typeof(userlist));
+    Group.findOne({ where: { id: groupid } })
+    .then(group => {
+      if(group){
+        Group.update({
+          name: groupName,
+          userlist: userlist,
+      },
+      {where :{ id:groupid }})
+    }
+    })
+      .then(result => {
+        res.json({message:'Group information updated successfully'});
+      })
+      .catch(err => {
+        console.log(err);
+      });
+};
 exports.getGroup = (req, res) => {
   const id = req.params.id;
   const Op = Sequelize.Op;   
   Group.findAll({ where: {
-    [Op.or]: [
-      { userId : id},
-      {userlist:{[Op.like]:'%;'+id+';%'} }  ]  }})
+    // [Op.or]: [
+        // { groupAdmin : id},
+    userlist:{[Op.like]:'%'+id+';%'}  }})
+    // [Op.or]: [
+    //   { groupAdmin : id}] 
+      // {userlist:{[Op.like]:'%;'+id+';%'} }  ]  }})
     // { userId : id, userlist:{[Op.like]:'%'+id+'%'} }})
   .then(group => {
     if(!group){
@@ -184,3 +254,39 @@ exports.getGroup = (req, res) => {
     console.log(err);
   })
 }
+
+exports.getUsersByName = (req, res) => {
+  const Op = Sequelize.Op; 
+  const value = req.params.value;
+  User.findAll({where : {name:{[Op.like]:'%'+value+'%'} } })
+  .then(users => {
+    if(!users){
+      return res.status(404).json( { message: "Users Not Available" });
+    }
+    return res.status(201).json({ users, message: 'success'});  
+    })
+  .catch(err=>{
+    console.log(err);
+  })
+}
+
+exports.getOneGroupInfo = (req, res) => {
+  const id = req.params.groupid;
+  const Op = Sequelize.Op;   
+  Group.findOne({ where: { id:id}})
+    // userlist:{[Op.like]:'%'+id+';%'} 
+    // [Op.or]: [
+    //   { userid : id}] 
+      // {userlist:{[Op.like]:'%;'+id+';%'} }  ]  }})
+    // { userId : id, userlist:{[Op.like]:'%'+id+'%'} }})
+  .then(group => {
+    if(!group){
+      return res.status(404).json( { message: "group not available" });
+    }
+    return res.status(201).json({ group, message: 'success'});  
+    })
+  .catch(err=>{
+    console.log(err);
+  })
+}
+

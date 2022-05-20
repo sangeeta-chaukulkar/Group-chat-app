@@ -18,24 +18,23 @@
                 
             </div>
         </div>
+        <div>
+            <input autofocus placeholder="search" type="text" autocomplete="off" name="search" id="search">
+            <ul class="list-user" id="list">
+
+            </ul>
+        </div>
         <div class="sidebar-search">
             <div class="sidebar-search-container">
                 <button type="submit" id="createGroup" onclick="openForm()">Create a group</button>
             </div>
         </div>
         <div class="sidebar-chats">
-            <!-- <div class="sidebar-chat"> -->
+  
                 <div class="chat-avatar">
-                    <!-- <img src="" alt=""> -->
+                   
                 </div>
-                <!-- <div class="chat-info"> -->
-                    <!-- <h4> </h4>
-                    <p>last message</p> -->
-                <!-- </div> -->
-                <!-- <div class="time">
-                    <p> 1pm</p>
-                </div> -->
-            <!-- </div> -->
+        
         </div>
     </div>
     <div class="container">
@@ -45,18 +44,31 @@
                     <img src="profile.JPG" alt="">
                 </div>
                 <div class="message-header-content">
-                    <h4></h4>
-                    <p> </p>
+
                 </div>
+
+                
             </div>
         </div>
         <div class='message_area'>
-            <!-- <p class="chat-message">This is a msg<span class="chat-timestamp">11:33pm</span></p> -->
+
         </div>
         <div class="footer">
             <form> 
-                <textarea cols="50" rows="1" id="msg" name="msg" placeholder="Enter a message"></textarea>
-                <button id="send">SEND</button>
+                <textarea cols="50" rows="1" id="msg" name="msg" placeholder="Enter a message"></textarea> 
+                    <!-- <form class="form-horizontal" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <div class="col-sm-4"> 
+                                <input type="file" class="form-control"  name="uploadFile"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4"> 
+                                <input class="btn btn-primary" type="submit" id="submitfile" value="Upload"/>
+                            </div>
+                        </div>
+                    </form>    -->
+                    <button id="send">SEND</button>
             </form>
         </div>
     </div>
@@ -65,13 +77,19 @@
     <form class="form-container">
       <input type="text" placeholder="Enter group name" name="groupName" id="groupName" required>
       <input type="text" id="groupusers" required>
-      <select id="usersInGroup">
-      </select>
+      <input type="text" id="groupusersid" >
+      <input autofocus placeholder="search friends" type="text" autocomplete="off" name="searchfriend" id="searchfriend">
+      <ul id="usersInGroup">
+      </ul>
       <button type="submit" class="btn" id="createGroupDB">Create</button>
+      <button type="submit" class="btn" id="updateGroupDB">Update</button>
       <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
     </form>
   </div>
 
+
+
+ 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.26.1/axios.min.js"></script>
     <script src="chatapp.js"></script>
